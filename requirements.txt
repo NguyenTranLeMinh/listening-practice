@@ -70,7 +70,6 @@ numpy==1.26.4
 packaging==24.2
 pillow==11.1.0
 platformdirs==4.3.7
-playsound==1.2.2
 pooch==1.8.2
 preshed==3.0.9
 propcache==0.3.1
@@ -79,6 +78,7 @@ psutil==7.0.0
 pycparser==2.22
 pydantic==2.11.3
 pydantic_core==2.33.1
+pygame==2.6.1
 Pygments==2.19.1
 pyparsing==3.2.3
 pysbd==0.3.4

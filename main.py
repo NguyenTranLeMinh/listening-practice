@@ -1,14 +1,43 @@
+"""
+This small program just speaks words individually and randomly to help you guys become familiar with them.
+You can customize the list of input words. The program will choose 2 files from the sources to speak.
+Author: Minh Ng
+Date: 2025-04-12
+"""
+
+
+import os
 import pygame
 import keyboard
 import time
 import random
 from TTS.api import TTS
 
-words = ["hello", "world", "Vietnam", "example", "on track", "schedule", "Thuy"]
-random.shuffle(words)
+vocabulary_path="vocabularies/"
+
+all_words = []
+files = [f for f in os.listdir(vocabulary_path) if f.endswith('.txt')]
+selected_files = random.sample(files, 2)
+
+for fname in selected_files:
+    file_path = os.path.join(vocabulary_path, fname)
+    try: 
+        with open(file_path, 'r') as f:
+            content = f.read().strip()
+            words = [word.strip() for word in content.split(',')]
+            all_words.extend(words)
+    except Exception as e:
+        print("Could not open file {}: {}".format(file_path, e))
+
 
 print("*** Initializing is done! ***")
+print("*** Feel free to press SPACE at any time to pause and predict the word you have heard. ***")
+print("*** Hope this small program will help you guys improve yourself, even if only a little. ***")
+print("*** Happy learning! 🌞 ***")
+
 tts = TTS(model_name="tts_models/en/ljspeech/vits")
+# tts_models/en/ljspeech/vits
+# tts_models/en/vctk/vits
 pygame.mixer.init()
 
 
@@ -31,8 +60,8 @@ import threading
 space_thread = threading.Thread(target=handle_space_press, daemon=True)
 space_thread.start()
 
-
-for word in words:
+random.shuffle(all_words)
+for word in all_words:
     file_path = f"files/{word}.wav"
     tts.tts_to_file(text=word, file_path=file_path)
     if exit_program:
@@ -65,4 +94,4 @@ for word in words:
             break
 
 pygame.mixer.quit()
-print("\nDon't be nervous, everything will be fine! ☺️")
+print("\n\"Don't be nervous, everything will be fine! April showers bring May flowers.☺️\"")

@@ -1,7 +1,7 @@
 # listening-practice
 Just a random personal project.
 
-The program will choose 2 files from the sources to speak randomly.
+The program will choose 1 file from the sources to speak randomly.
 
 Feel free to press SPACE at any time to pause and predict the word you have heard.
 

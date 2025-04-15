@@ -1,6 +1,6 @@
 """
 This small program just speaks words individually and randomly to help you guys become familiar with them.
-You can customize the list of input words. The program will choose 2 files from the sources to speak.
+You can customize the list of input words. The program will choose 1 file from the sources to speak.
 Author: Minh Ng
 Date: 2025-04-12
 """
@@ -11,13 +11,15 @@ import pygame
 import keyboard
 import time
 import random
+import argparse
 from TTS.api import TTS
 
 vocabulary_path="vocabularies/"
 
 all_words = []
 files = [f for f in os.listdir(vocabulary_path) if f.endswith('.txt')]
-selected_files = random.sample(files, 2)
+# selected_files = random.sample(files, 2)
+selected_files = files
 
 for fname in selected_files:
     file_path = os.path.join(vocabulary_path, fname)
@@ -30,12 +32,18 @@ for fname in selected_files:
         print("Could not open file {}: {}".format(file_path, e))
 
 
+parser = argparse.ArgumentParser(description='TTS Voice Selection')
+parser.add_argument('--voice', type=int, choices=[0, 1, 2], help='Voice selection (0, 1, or 2)')
+args = parser.parse_args()
+
+voice_id = args.voice if args.voice is not None else random.randint(0, 2)
+print("Voice", voice_id)
+
 print("*** Initializing is done! ***")
 print("*** Feel free to press SPACE at any time to pause and predict the word you have heard. ***")
 print("*** Hope this small program will help you guys improve yourself, even if only a little. ***")
 print("*** Happy learning! 🌞 ***")
 
-tts = TTS(model_name="tts_models/en/ljspeech/vits")
 # tts_models/en/ljspeech/vits
 # tts_models/en/vctk/vits
 pygame.mixer.init()
@@ -61,9 +69,18 @@ space_thread = threading.Thread(target=handle_space_press, daemon=True)
 space_thread.start()
 
 random.shuffle(all_words)
+
 for word in all_words:
     file_path = f"files/{word}.wav"
-    tts.tts_to_file(text=word, file_path=file_path)
+    if voice_id == 0:
+        tts = TTS(model_name="tts_models/en/ljspeech/vits")
+        tts.tts_to_file(text=word, file_path=file_path)
+    elif voice_id == 1:
+        tts = TTS(model_name="tts_models/en/vctk/vits")
+        tts.tts_to_file(text=word, file_path=file_path, speaker='p256')
+    elif voice_id == 2:
+        tts = TTS(model_name="tts_models/en/vctk/vits")
+        tts.tts_to_file(text=word, file_path=file_path, speaker='p287')
     if exit_program:
         break
     
@@ -94,4 +111,4 @@ for word in all_words:
             break
 
 pygame.mixer.quit()
-print("\n\"Don't be nervous, everything will be fine! April showers bring May flowers.☺️\"")
+print("\n\"Don't be nervous, everything will be fine! April showers bring May flowers.\" ☺️")
